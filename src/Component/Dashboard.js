@@ -7,13 +7,15 @@ import axios from "axios";
 
 const Dashboard = () => {
      const[post,setPost] =useState([])
-     const[searchTerm, setSearchTerm]=useState([]);
+     const[searchTerm, setSearchTerm]=useState("");
      const[searchResults, setSearchresults]=useState([]);
     
      const handleChange = (e)=>{
+         
          setSearchTerm(e.target.value);
-         console.log(e.target.value)
-     }
+         console.log("Terms we have " ,e.target.value);
+        }
+       
 
 
     // const Fetchpost = () => {
@@ -38,7 +40,9 @@ const Dashboard = () => {
 
 
     const Fetchpost = async() => {
-        let response = await fetch("https://api.github.com/search/users?q={searchTerms}");
+       
+        
+        let response = await fetch(`https://api.github.com/search/users?q=${searchTerm}`);
        
         const data = await response.json();
         console.log(data);
@@ -51,10 +55,9 @@ const Dashboard = () => {
    
     useEffect(()=>{
        Fetchpost();
-       const result = post.filter(person => person.toLowerCase().includes(searchTerm));
-       setSearchTerm(result);
+      
        
-    },[]);
+    },[searchTerm]);
 
     
     // const content = post? <div>LOADING</div> : <div><pre>{JSON.stringify(info, null ,2)}</pre></div> ;
@@ -73,13 +76,14 @@ const Dashboard = () => {
             <input style={{backgroundImage : `url(${Search})`}} className="input100 size2"   type="text" placeholder="Search"
             value={searchTerm} onChange={handleChange} >
              </input>
-             <button onClick={Fetchpost} >CLICK</button>  
+             {/* <button onClick={Fetchpost} >CLICK</button>   */}
          </form>  
 
             </div>
             <div>
                   {
-                      searchResults.map((currElement) =>{
+                      post && 
+                      post.map((currElement) =>{
                           return(
                               <>
                             <li>{currElement.login}</li>
