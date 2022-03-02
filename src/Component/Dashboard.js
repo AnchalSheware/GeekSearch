@@ -8,7 +8,8 @@ import axios from "axios";
 const Dashboard = () => {
      const[post,setPost] =useState([])
      const[searchTerm, setSearchTerm]=useState("");
-     const[searchResults, setSearchresults]=useState([]);
+     const[searchResults, setSearchresults]=useState();
+     const[image,setImage]=useState("");
     
      const handleChange = (e)=>{
          
@@ -38,7 +39,7 @@ const Dashboard = () => {
 
     // }
 
-
+    let total_item;
     const Fetchpost = async() => {
        
         
@@ -46,8 +47,11 @@ const Dashboard = () => {
        
         const data = await response.json();
         console.log(data);
+        
         setPost(data.items);
-    
+        setSearchresults(data.total_count);
+        
+        console.log(data.total_count);
         
        
     }
@@ -80,15 +84,30 @@ const Dashboard = () => {
          </form>  
 
             </div>
-            <div>
+            <div className="container">
+            <span className="card_results" >Total Results: {searchResults}</span>
                   {
                       post && 
                       post.map((currElement) =>{
                           return(
-                              <>
-                            <li>{currElement.login}</li>
-                            <li>{currElement.id}</li>
-                            </>
+                              
+                              
+                              <div className="card">
+                              <img src={currElement.avatar_url}></img>
+                              <div className="card_body"> 
+                                <div className="card_name"> {currElement.login}</div>
+                                <div className="card_url">Profile url :  {currElement.url}</div>
+                                <div  className="card_id">
+                                    <span>USER ID :{currElement.id}</span> <br></br>
+                                    <span>NODE ID :{currElement.node_id}</span>
+                                 </div>
+                               </div>
+                               <div><button>DETAILS</button></div>
+                              
+                              </div>
+                              
+                            
+                           
                           )
                          
                       })
