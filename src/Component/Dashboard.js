@@ -5,19 +5,38 @@ import 'regenerator-runtime/runtime';
 import { useState , useEffect } from "react";
 import axios from "axios";
 
+
 const Dashboard = () => {
      const[post,setPost] =useState([])
      const[searchTerm, setSearchTerm]=useState("");
      const[searchResults, setSearchresults]=useState();
      const[image,setImage]=useState("");
+     const[selected,setSelected] =  useState(null);
+     const[incorder ,setincorder] = useState(post)
+     const [isActive, setActive] = useState(false);
+     
+
+     const ascOrder = () => {
+        const sorted = incorder.sort((a, b) => {
+        a.login.localCompare(b.login);
+
+     });
+    setincorder(sorted)}
+     
+    
+     const toggle = (post) =>{
+         setActive(!isActive);
+         setSelected(post.id);
+       
+       
+     }
     
      const handleChange = (e)=>{
          
          setSearchTerm(e.target.value);
          console.log("Terms we have " ,e.target.value);
         }
-       
-
+   
 
     // const Fetchpost = () => {
     //      const Endpoint = "https://api.github.com/search/users?q=aman";
@@ -70,11 +89,11 @@ const Dashboard = () => {
         <div>
             <div className="header">
          <form>
-            <select className="input100 size1" name="cars" id="cars" >
-               <option value="volvo">Search by Name</option>
-               <option value="saab">Saab</option>
-               <option value="mercedes">Mercedes</option>
-               <option value="audi">Audi</option>
+            <select className="input100 size1" >
+               <option value="" disabled selected>Search by Name</option>
+               <option value="Ascending " onClick={ascOrder}> Name (A - Z)</option>
+               <option value="Decending" >Name (Z - A)</option>
+              
             </select>
                 
             <input style={{backgroundImage : `url(${Search})`}} className="input100 size2"   type="text" placeholder="Search"
@@ -88,7 +107,7 @@ const Dashboard = () => {
             <span className="card_results" >Total Results: {searchResults}</span>
                   {
                       post && 
-                      post.map((currElement) =>{
+                      post.map((currElement,i) =>{
                           return(
                               
                               
@@ -101,8 +120,16 @@ const Dashboard = () => {
                                     <span>USER ID :{currElement.id}</span> <br></br>
                                     <span>NODE ID :{currElement.node_id}</span>
                                  </div>
+                                 {isActive && selected ===currElement.id?
+                               <div  className="card_id">
+                                    <span>USER ID :{currElement.id}</span> <br></br>
+                                    <span>NODE ID :{currElement.node_id}</span>
+                              </div> : null}
                                </div>
-                               <div><button>DETAILS</button></div>
+
+                               <div><button onClick={()=>toggle(currElement)} >{isActive && selected===currElement.id ? "COLLAPSE" : "DETAILS"}</button></div>
+                               
+                               
                               
                               </div>
                               

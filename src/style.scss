@@ -1,9 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Poppins:wght@700&display=swap");
 * {
   padding: 0%;
   margin: 0;
 }
 body {
-  background-color: #edeade;
+  // background-color: #edeade;
+  font-family: "Lato", sans-serif;
 }
 .header {
   background-color: #008fdd;
