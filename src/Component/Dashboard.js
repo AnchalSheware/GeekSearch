@@ -10,31 +10,53 @@ const Dashboard = () => {
      const[post,setPost] =useState([])
      const[searchTerm, setSearchTerm]=useState("");
      const[searchResults, setSearchresults]=useState();
-     const[image,setImage]=useState("");
      const[selected,setSelected] =  useState(null);
-     const[incorder ,setincorder] = useState(post)
-     const [isActive, setActive] = useState(false);
+     
      
 
-     const ascOrder = () => {
-        const sorted = incorder.sort((a, b) => {
-        a.login.localCompare(b.login);
-
-     });
-    setincorder(sorted)}
+     const ascOrder = (e) => {
+          console.log(e, "Ascending Function is called");
+          let copiedPost = [...post]; 
+          const sorted = copiedPost.sort((a, b) => {
+          return (a.login?.toLowerCase() > b.login?.toLowerCase()) ? 1 : -1
+       });
+        console.log("Soterd String " ,sorted);
+     setPost(sorted);
+    }
+     const sortByDescending = (e) => {
+        console.log(e,  "Decending  function is called");
+        let copiedpost = [...post];
+        let sortedDescending = copiedpost.sort((a, b) => {
+          return (a.login?.toLowerCase() < b.login?.toLowerCase()) ? 1 : -1
+        });
+        console.log("Soterd String " ,sortedDescending);
+       setPost(sortedDescending);
+      }
+      const handlesortOrder= (e) =>{
+        const val=e.target.value;
+        console.log(val);
+        if(val==="dscs")
+        {
+          sortByDescending();
+        }
+        else{
+         
+          ascOrder();
+        }
+      //  val==="acs"?ascOrder():console.log("invalid");
+      }
      
     
      const toggle = (post) =>{
-         setActive(!isActive);
+        
          setSelected(post.id);
+       }
        
-       
-     }
     
      const handleChange = (e)=>{
          
          setSearchTerm(e.target.value);
-         console.log("Terms we have " ,e.target.value);
+       //  console.log("Terms we have " ,e.target.value);
         }
    
 
@@ -65,22 +87,30 @@ const Dashboard = () => {
         let response = await fetch(`https://api.github.com/search/users?q=${searchTerm}`);
        
         const data = await response.json();
-        console.log(data);
+       // console.log(data);
         
         setPost(data.items);
+        // setincorder(data.items);
+        // setdecorder(data.items);
+
         setSearchresults(data.total_count);
         
-        console.log(data.total_count);
+     //   console.log(data.total_count);
         
        
     }
-    console.log(post)
+  //  console.log(post)
    
     useEffect(()=>{
        Fetchpost();
       
        
     },[searchTerm]);
+    // useEffect(()=>{
+    //     console.log(post);
+       
+        
+    //  },[post]);
 
     
     // const content = post? <div>LOADING</div> : <div><pre>{JSON.stringify(info, null ,2)}</pre></div> ;
@@ -89,10 +119,10 @@ const Dashboard = () => {
         <div>
             <div className="header">
          <form>
-            <select className="input100 size1" >
-               <option value="" disabled selected>Search by Name</option>
-               <option value="Ascending " onClick={ascOrder}> Name (A - Z)</option>
-               <option value="Decending" >Name (Z - A)</option>
+            <select className="input100 size1" onChange={handlesortOrder} >
+               <option  disabled selected>Search by Name</option>
+               <option value="acs"> Name (A - Z)</option>
+               <option value="dscs">Name (Z - A)</option>
               
             </select>
                 
@@ -106,8 +136,10 @@ const Dashboard = () => {
             <div className="container">
             <span className="card_results" >Total Results: {searchResults}</span>
                   {
+
                       post && 
                       post.map((currElement,i) =>{
+                         console.log(post);
                           return(
                               
                               
@@ -120,14 +152,14 @@ const Dashboard = () => {
                                     <span>USER ID :{currElement.id}</span> <br></br>
                                     <span>NODE ID :{currElement.node_id}</span>
                                  </div>
-                                 {isActive && selected ===currElement.id?
+                                 {selected ===currElement.id?
                                <div  className="card_id">
-                                    <span>USER ID :{currElement.id}</span> <br></br>
-                                    <span>NODE ID :{currElement.node_id}</span>
+                                    <span>USER SCORE :{currElement.score}</span> <br></br>
+                                    <span>USER TYPE :{currElement.type}</span>
                               </div> : null}
                                </div>
 
-                               <div><button onClick={()=>toggle(currElement)} >{isActive && selected===currElement.id ? "COLLAPSE" : "DETAILS"}</button></div>
+                               <div><button onClick={()=>toggle(currElement)} >{selected===currElement.id ? "COLLAPSE" : "DETAILS"}</button></div>
                                
                                
                               
